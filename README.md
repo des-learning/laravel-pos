@@ -16,7 +16,7 @@ Lingkungan pengembangan mengikuti [dokumentasi Laravel](https://laravel.com/docs
 
 - [PHP 8.3](https://www.php.net/manual/en/install.php)
   Runtime aplikasi PHP, untuk menjalankan script pada bagian backend.
-    - [Composer](https://getcomposer.org/doc/00-intro.md)
+  - [Composer](https://getcomposer.org/doc/00-intro.md)
       Package manager untuk aplikasi PHP
 - [NodeJS](https://nodejs.org/en)
   Runtime untuk aplikasi Javascript, digunakan untuk memproses asset
@@ -39,8 +39,8 @@ Menggunakan code ini:
 - Copy file `.env.example` ke `.env`, edit sesuai kebutuhan.
   Jika menggunakan database SQLite, jalankan perintah berikut untuk
   membuat file database:
-    - di Windows: `type > point_of_sale.db`
-    - di Linux/Mac: `touch point_of_sale.db`
+  - di Windows: `type > point_of_sale.db`
+  - di Linux/Mac: `touch point_of_sale.db`
       Sesuaikan file `point_of_sale.db` sesuai dengan konfigurasi di `.env`
 - Jalankan `php artisan migrate` untuk membuat schema database.
 - Jalankan `composer run dev` untuk menjalankan aplikasi point of sale
@@ -68,3 +68,31 @@ untuk me-manage user pada task yang akan datang.
 
 - Hapus link regiter pada halaman index
   `routes/auth.php` hapus routing untuk registrasi.
+
+## 003. Membuat fitur product
+
+Pada tahapan ini kita akan memulai membuat fitur product.
+
+1. Buat model + database migration untuk model `Product`
+   `php artisan make:model Product -m -f`
+
+2. Model akan terbentuk di `app/Models/Product.php`
+
+3. File database migration akan terbentuk di `database/migrations/XXXX_XX_XX_XXXXXX_create_products_table.php`
+
+4. File factory akan terbentu di `database/factories/ProductFactory.php`
+
+`php artisan` merupakan perintah CLI pada framework Laravel untuk memudahkan kita
+mengelola aplikasi. Salah satu fitur yang kita gunakan pada tahapan ini adalah untuk
+men-_generate_ model sebagai class yang digunakan untuk interaksi dengan data.
+Dan database migration untuk membuat struktur database.
+
+Factory nanti akan kita gunakan untuk membuat test/seeder Product.
+
+5. File `database/seeders/ProductSeeder.php` untuk membuat sample data product.
+
+Jalankan seeder untuk membuat sample product.
+
+```sh
+php artisan db:seed --class=ProductSeeder
+```
