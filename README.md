@@ -46,3 +46,17 @@ Menggunakan code ini:
 - Jalankan `composer run dev` untuk menjalankan aplikasi point of sale
   di localhost (default di port 8000).
 - Akses aplikasi melalui browser di `http://localhost:8000`.
+
+## 001. Seed user
+
+Kita akan mengubah [seeder](https://laravel.com/docs/11.x/seeding) untuk membuat
+user admin dengan password default, password.
+
+Jalankan seeder dengan perintah:
+
+```sh
+php artisan db:seed --class=AdminUserSeeder
+```
+
+Setelah meng-seed database dengan user admin, kita bisa login dengan menggunakan
+user `admin@localhost` dan password `password`.
