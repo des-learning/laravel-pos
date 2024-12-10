@@ -16,7 +16,7 @@ Lingkungan pengembangan mengikuti [dokumentasi Laravel](https://laravel.com/docs
 
 - [PHP 8.3](https://www.php.net/manual/en/install.php)
   Runtime aplikasi PHP, untuk menjalankan script pada bagian backend.
-  - [Composer](https://getcomposer.org/doc/00-intro.md)
+    - [Composer](https://getcomposer.org/doc/00-intro.md)
       Package manager untuk aplikasi PHP
 - [NodeJS](https://nodejs.org/en)
   Runtime untuk aplikasi Javascript, digunakan untuk memproses asset
@@ -39,8 +39,8 @@ Menggunakan code ini:
 - Copy file `.env.example` ke `.env`, edit sesuai kebutuhan.
   Jika menggunakan database SQLite, jalankan perintah berikut untuk
   membuat file database:
-  - di Windows: `type > point_of_sale.db`
-  - di Linux/Mac: `touch point_of_sale.db`
+    - di Windows: `type > point_of_sale.db`
+    - di Linux/Mac: `touch point_of_sale.db`
       Sesuaikan file `point_of_sale.db` sesuai dengan konfigurasi di `.env`
 - Jalankan `php artisan migrate` untuk membuat schema database.
 - Jalankan `composer run dev` untuk menjalankan aplikasi point of sale
@@ -60,3 +60,11 @@ php artisan db:seed --class=AdminUserSeeder
 
 Setelah meng-seed database dengan user admin, kita bisa login dengan menggunakan
 user `admin@localhost` dan password `password`.
+
+## 002. Menghapus fitur self registration
+
+Berikutnya kita akan menghapus fitur self registration. Kita akan membuat fitur
+untuk me-manage user pada task yang akan datang.
+
+- Hapus link regiter pada halaman index
+  `routes/auth.php` hapus routing untuk registrasi.
