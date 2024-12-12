@@ -121,3 +121,11 @@ Task ini akan dibuat menjadi beberapa commit:
 2. halaman list product
 3. halaman new product
 4. halaman edit product
+
+## 006. Migrasi untuk table Sale Transaction dan Item
+
+Berikutnya kita mempersiapkan data store untuk menyimpan informasi penjualan.
+
+SaleTransaction merupakan master/header table untuk menyimpan informasi penjualan.
+Sedangkan SaleTransactionItem merupakan masing-masing item yang terjual pada
+transaksi penjualan.
