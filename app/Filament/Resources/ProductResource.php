@@ -7,6 +7,7 @@ use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
 use Filament\Forms\Components\Section;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Infolists\Components\Section as FilamentSection;
 use Filament\Infolists\Components\TextEntry;
@@ -31,7 +32,18 @@ class ProductResource extends Resource
     {
         return $form
             ->schema([
-                //
+                Section::make()
+                    ->schema([
+                        TextInput::make('sku')->label('SKU')
+                            ->required()
+                            ->unique(),
+                        TextInput::make('name')->label('Name')
+                            ->required(),
+                        TextInput::make('price')->label('Price')
+                            ->numeric()->inputMode('decimal')
+                            ->required()
+                            ->rules(['gt:0']),
+                    ]),
             ]);
     }
 
