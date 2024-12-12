@@ -9,6 +9,7 @@ use Filament\Forms;
 use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -31,7 +32,15 @@ class ProductResource extends Resource
     {
         return $table
             ->columns([
-                //
+                TextColumn::make('sku')->label('SKU')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('name')->label('Name')
+                    ->sortable()
+                    ->searchable(),
+                TextColumn::make('price')->label('Price')
+                    ->money('IDR', locale: 'id')
+                    ->sortable(),
             ])
             ->filters([
                 //
@@ -43,7 +52,8 @@ class ProductResource extends Resource
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
-            ]);
+            ])
+            ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('sku', 'asc'));
     }
 
     public static function getRelations(): array
