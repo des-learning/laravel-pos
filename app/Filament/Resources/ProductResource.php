@@ -6,7 +6,11 @@ use App\Filament\Resources\ProductResource\Pages;
 use App\Filament\Resources\ProductResource\RelationManagers;
 use App\Models\Product;
 use Filament\Forms;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Form;
+use Filament\Infolists\Components\Section as FilamentSection;
+use Filament\Infolists\Components\TextEntry;
+use Filament\Infolists\Infolist;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Columns\TextColumn;
@@ -19,6 +23,9 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-rectangle-stack';
+
+    private static string $moneyCurrency = 'IDR';
+    private static string $moneyLocale = 'id';
 
     public static function form(Form $form): Form
     {
@@ -39,13 +46,14 @@ class ProductResource extends Resource
                     ->sortable()
                     ->searchable(),
                 TextColumn::make('price')->label('Price')
-                    ->money('IDR', locale: 'id')
+                    ->money(self::$moneyCurrency, locale: self::$moneyLocale)
                     ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
@@ -54,6 +62,20 @@ class ProductResource extends Resource
                 ]),
             ])
             ->modifyQueryUsing(fn (Builder $query) => $query->orderBy('sku', 'asc'));
+    }
+
+    public static function infolist(Infolist $infolist): Infolist
+    {
+        return $infolist
+            ->schema([
+                FilamentSection::make()
+                    ->schema([
+                        TextEntry::make('sku')->label('SKU'),
+                        TextEntry::make('name')->label('Name'),
+                        TextEntry::make('price')->label('Price')
+                            ->money(self::$moneyCurrency, locale: self::$moneyLocale),
+                    ]),
+            ]);
     }
 
     public static function getRelations(): array
@@ -68,6 +90,7 @@ class ProductResource extends Resource
         return [
             'index' => Pages\ListProducts::route('/'),
             'create' => Pages\CreateProduct::route('/create'),
+            'view' => Pages\ViewProduct::route('/{record}'),
             'edit' => Pages\EditProduct::route('/{record}/edit'),
         ];
     }
