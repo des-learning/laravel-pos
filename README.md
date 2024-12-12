@@ -96,3 +96,13 @@ Jalankan seeder untuk membuat sample product.
 ```sh
 php artisan db:seed --class=ProductSeeder
 ```
+
+## 004. Memasang filament
+
+Untuk mempercepat development, aplikasi ini menggunakan [Filament](https://filamentphp.com/)
+sebagai framework halaman admin. Dengan menggunakan framework ini,
+kita bisa dengan cepat membuat form-form dan halaman lain yang biasanya diguankan
+oleh admin.
+
+URL untuk mengakses aplikasi POS menggunakan filament berada di:
+`http://localhost:8000/point-of-sale`
