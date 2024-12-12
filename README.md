@@ -106,3 +106,18 @@ oleh admin.
 
 URL untuk mengakses aplikasi POS menggunakan filament berada di:
 `http://localhost:8000/point-of-sale`
+
+## 005. Membuat halaman fitur product menggunakan filament
+
+Pada task ini kita akan membuat fitur halaman Product:
+
+1. List Product
+2. Create new Product
+3. Edit Product
+
+Task ini akan dibuat menjadi beberapa commit:
+
+1. inisialisasi resource product
+2. halaman list product
+3. halaman new product
+4. halaman edit product
