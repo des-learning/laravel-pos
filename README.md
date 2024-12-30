@@ -129,3 +129,16 @@ Berikutnya kita mempersiapkan data store untuk menyimpan informasi penjualan.
 SaleTransaction merupakan master/header table untuk menyimpan informasi penjualan.
 Sedangkan SaleTransactionItem merupakan masing-masing item yang terjual pada
 transaksi penjualan.
+
+## 007. Draft Transaction sale Form
+
+Pada tahapan ini kita membuat halaman untuk menginput sale transaction.
+
+Fitur ini agak rumit karena kita harus membuat halaman custom pada filament
+dengan tujuan bisa menginput form master detail.
+
+Kita akan membuat satu input SKU, dan quantity barang dan kemudian
+menampilkan daftar barang yang dijual pada table.
+
+Data pada tahapan ini belum disimpan ke database hanya berupa tampilan di web.
+Logic untuk menyimpan data akan dilakukan pada tahap berikutnya.
