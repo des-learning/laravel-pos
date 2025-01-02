@@ -3,6 +3,7 @@
 namespace App\Filament\Pages;
 
 use App\Models\Product;
+use App\Models\SaleTransaction;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Actions;
 use Filament\Forms\Components\Actions\Action as FormAction;
@@ -17,7 +18,10 @@ use Filament\Notifications\Notification;
 use Filament\Pages\Concerns\HasUnsavedDataChangesAlert;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\Page;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Sales extends Page
 {
@@ -56,7 +60,6 @@ class Sales extends Page
                         [
                             TextInput::make('item_input.product_sku')
                                 ->label('SKU')
-                                ->required()
                                 ->columnSpan(2)
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(
@@ -83,9 +86,7 @@ class Sales extends Page
                                 ->numeric()
                                 ->integer()
                                 ->default(1)
-                                ->minValue(1)
-                                ->maxValue(99)
-                                ->required()
+                                ->rules(['min:1', 'max:99'])
                                 ->live(onBlur: true)
                                 ->afterStateUpdated(
                                     fn (Get $get, Set $set) =>
@@ -124,6 +125,50 @@ class Sales extends Page
 
     public function create(): void
     {
+        $saleTransactionItems = $this->data['sale_transaction_items'];
+        if (count($saleTransactionItems) <= 0) {
+            Notification::make()
+                ->title('Masukkan item yang dijual')
+                ->danger()
+                ->send();
+            return;
+        }
+
+
+        try {
+            DB::transaction(function () use ($saleTransactionItems) {
+                // TODO: lakukan lock supaya tidak terjadi race condition
+                $nextNumber = (DB::table('sale_transactions')->max('number') ?? 0) + 1;
+                $saleTransaction = SaleTransaction::create([
+                    'number' => $nextNumber,
+                    'cashier_id' => $this->data['cashier_id'],
+                    'transaction_time' => Carbon::now(),
+                ]);
+
+                $saleTransaction->items()->createMany($saleTransactionItems);
+            });
+
+            Notification::make()
+                ->title('Transaksi penjualan tersimpan')
+                ->success()
+                ->send();
+
+            redirect(Sales::getUrl());
+        } catch (\Exception $e) {
+            Log::error(
+                'error ketika menyimpan transaksi penjualan',
+                [
+                    'message' => $e->getMessage(),
+                    'stack_trace' => $e->getTraceAsString(),
+                ]
+            );
+
+            Notification::make()
+                ->title('Kesalahan ketika menyimpan transaksi penjualan')
+                ->body($e->getMessage())
+                ->danger()
+                ->send();
+        }
     }
 
     protected function getFormActions(): array
@@ -166,6 +211,17 @@ class Sales extends Page
                         return;
                     }
 
+                    $invalidQuantity = is_null($get('item_input.quantity_sold'))
+                        || $get('item_input.quantity_sold') < 1
+                        || $get('item_input.quantity_sold') > 99;
+                    if ($invalidQuantity) {
+                        Notification::make()
+                            ->title('Jumlah barang salah')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+
                     // get form data
                     $productSku = $get('item_input.product_sku');
                     $productName = $get('item_input.product_name');
@@ -191,6 +247,21 @@ class Sales extends Page
                     // calculate
                     $item['quantity_sold'] += $quantitySold;
                     $item['subtotal'] = $item['product_price'] * $item['quantity_sold'];
+
+                    if ($item['subtotal'] < 0) {
+                        Log::error("invalid subtotal", [
+                            'product_sku' => $productSku,
+                            'quantity_sold' => $item['quantity_sold'],
+                            'product_price' => $item['product_price'],
+                            'subtotal' => $item['subtotal'],
+                        ]);
+
+                        Notification::make()
+                            ->title('Subtotal negatif')
+                            ->danger()
+                            ->send();
+                        return;
+                    }
 
                     // put back updated item
                     if ($addNewItem) {

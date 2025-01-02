@@ -142,3 +142,8 @@ menampilkan daftar barang yang dijual pada table.
 
 Data pada tahapan ini belum disimpan ke database hanya berupa tampilan di web.
 Logic untuk menyimpan data akan dilakukan pada tahap berikutnya.
+
+## 008. Simpan transaksi penjualan
+
+Berikutnya kita melakukan finishing terhadap form sale transaction dan
+menyimpan data transaksi penjualan yang telah diinput.
